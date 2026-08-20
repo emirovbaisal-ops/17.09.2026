@@ -1,0 +1,814 @@
+<!doctype html>
+<html lang="ky">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Той Чакыруусу</title>
+
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;600&display=swap"
+    rel="stylesheet"
+  >
+
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+
+  <style>
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e0c068;
+      --cream: #faf7f2;
+      --beige: #f5efe6;
+      --text: #3f3a33;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cream);
+      color: var(--text);
+      font-family: "Cormorant Garamond", serif;
+    }
+
+    .font-display {
+      font-family: "Playfair Display", serif;
+    }
+
+    /* Decorative ornament */
+    .ornament {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      opacity: 0.3;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 5 L60 20 L80 20 L65 32 L70 50 L50 40 L30 50 L35 32 L20 20 L40 20Z' fill='none' stroke='%23c9a84c' stroke-width='1'/%3E%3Ccircle cx='50' cy='50' r='45' fill='none' stroke='%23c9a84c' stroke-width='0.5'/%3E%3Ccircle cx='50' cy='50' r='35' fill='none' stroke='%23c9a84c' stroke-width='0.5'/%3E%3Cpath d='M50 5 Q65 25 50 50 Q35 25 50 5' fill='none' stroke='%23c9a84c' stroke-width='0.8'/%3E%3Cpath d='M5 50 Q25 35 50 50 Q25 65 5 50' fill='none' stroke='%23c9a84c' stroke-width='0.8'/%3E%3Cpath d='M95 50 Q75 35 50 50 Q75 65 95 50' fill='none' stroke='%23c9a84c' stroke-width='0.8'/%3E%3Cpath d='M50 95 Q35 75 50 50 Q65 75 50 95' fill='none' stroke='%23c9a84c' stroke-width='0.8'/%3E%3C/svg%3E");
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    /* Floating particles */
+    .particle {
+      position: fixed;
+      bottom: -10px;
+      width: 6px;
+      height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+      animation: float 8s infinite linear;
+    }
+
+    @keyframes float {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(0);
+      }
+
+      20% {
+        opacity: 0.6;
+      }
+
+      80% {
+        opacity: 0.3;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateY(-110vh) scale(1);
+      }
+    }
+
+    /* Scroll animation */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition:
+        opacity 0.8s ease,
+        transform 0.8s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Calendar */
+    .calendar-highlight {
+      background: linear-gradient(
+        135deg,
+        var(--gold),
+        var(--gold-light)
+      );
+      color: white;
+      border-radius: 50%;
+      font-weight: 700;
+      box-shadow: 0 4px 15px rgba(201, 168, 76, 0.25);
+    }
+
+    .calendar-day {
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Divider */
+    .divider-ornament {
+      width: 100%;
+      max-width: 320px;
+      height: 40px;
+      margin: 0 auto;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 40'%3E%3Cpath d='M0 20 Q50 0 100 20 Q150 40 200 20' fill='none' stroke='%23c9a84c' stroke-width='1'/%3E%3Ccircle cx='100' cy='20' r='4' fill='%23c9a84c'/%3E%3Ccircle cx='80' cy='18' r='2' fill='%23c9a84c'/%3E%3Ccircle cx='120' cy='22' r='2' fill='%23c9a84c'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+    }
+
+    /* Audio button */
+    .audio-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 50;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(201, 168, 76, 0.4);
+      cursor: pointer;
+      border: none;
+      transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+    }
+
+    .audio-btn:hover {
+      transform: scale(1.1);
+      background: var(--gold-light);
+    }
+
+    .audio-btn:focus-visible {
+      outline: 3px solid rgba(201, 168, 76, 0.35);
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 640px) {
+      .ornament {
+        width: 80px;
+        height: 80px;
+      }
+
+      .audio-btn {
+        right: 16px;
+        bottom: 16px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .particle {
+        animation: none;
+      }
+
+      .fade-in {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body
+  data-template-id="__page-root"
+  class="w-full min-h-screen overflow-x-hidden relative"
+>
+
+  <!-- Floating particles -->
+  <div id="particles" aria-hidden="true"></div>
+
+  <!-- Hero -->
+  <section
+    class="relative flex flex-col items-center justify-center text-center px-4"
+    style="min-height: 100svh;"
+  >
+    <div class="ornament top-4 left-4"></div>
+    <div
+      class="ornament top-4 right-4"
+      style="transform: scaleX(-1);"
+    ></div>
+
+    <div
+      class="ornament bottom-4 left-4"
+      style="transform: scaleY(-1);"
+    ></div>
+
+    <div
+      class="ornament bottom-4 right-4"
+      style="transform: scale(-1);"
+    ></div>
+
+    <div class="fade-in">
+      <p
+        data-template-id="invite-text"
+      class="canva-text text-lg md:text-xl leading-relaxed"
+        style="color: var(--gold);"
+      >
+        Бисмиллахир-Рахманир-Рахим
+
+Ассаламу алейкум ва рахматуллахи ва баракатух!
+
+Аллах Тааланын каалоосу менен эки жаштын жүрөгүн бириктирип, үй-бүлө куруу бактысына жеткен кубанычтуу күнүбүздө сиздерди үйлөнүү тоюбуздун төрүнө чакырабыз.
+      </p>
+
+      <h1 class="font-display mb-2">
+        <span
+          data-template-id="groom-name"
+          class="canva-text block text-5xl md:text-7xl"
+          style="color: var(--gold);"
+        >
+          Мухаммадали
+        </span>
+
+        <span
+          data-template-id="ampersand"
+          class="canva-text block text-3xl md:text-4xl italic my-2"
+          style="color: var(--gold);"
+        >
+          &
+        </span>
+
+        <span
+          data-template-id="bride-name"
+          class="canva-text block text-5xl md:text-7xl"
+          style="color: var(--gold);"
+        >
+          Мубина
+        </span>
+      </h1>
+
+      <p
+        data-template-id="hero-date"
+        class="canva-text mt-8 text-lg tracking-widest"
+      >
+        17 СЕНТЯБРЬ 2026
+      </p>
+    </div>
+  </section>
+
+  <div class="divider-ornament"></div>
+
+  <!-- Invitation -->
+  <section
+    class="py-16 px-4 text-center max-w-2xl mx-auto fade-in"
+  >
+    <p
+      data-template-id="invite-text"
+      class="canva-text text-lg md:text-xl leading-relaxed"
+    >
+    Урматтуу туугандар, кадырлуу достор жана жакындарыбыз,
+бул өзгөчө күнү биздин кубанычыбызга орток болуп, ак баталарыңыздарды берип, жаш үй-бүлөгө жакшы тилектериңиздерди арнап коюшуңуздарды каалайбыз.
+
+Аллах Таала жаштардын никесин бекем, үй-бүлөсүн бактылуу, өмүрүн берекелүү кылсын! Аамин.
+    </p>
+  </section>
+
+  <div class="divider-ornament"></div>
+
+  <!-- Calendar -->
+  <section class="py-16 px-4 fade-in">
+    <h2
+      data-template-id="calendar-title"
+      class="canva-text font-display text-center text-2xl mb-8"
+    >
+      Сентябрь 2026
+    </h2>
+
+    <div
+      id="calendar"
+      class="max-w-sm mx-auto grid grid-cols-7 gap-1 text-center text-sm"
+      aria-label="Сентябрь 2026 календары"
+    ></div>
+  </section>
+
+  <div class="divider-ornament"></div>
+
+  <!-- Countdown -->
+  <section class="py-16 px-4 text-center fade-in">
+    <h2
+      data-template-id="countdown-title"
+      class="canva-text font-display text-2xl mb-8"
+    >
+      Тойго чейин
+    </h2>
+
+    <div class="flex justify-center gap-4 md:gap-8 flex-wrap">
+
+      <div class="flex flex-col items-center">
+        <span
+          id="cd-days"
+          class="font-display text-4xl md:text-5xl"
+          style="color: var(--gold);"
+        >0</span>
+
+        <span
+          data-template-id="label-days"
+          class="canva-text text-xs uppercase tracking-wider mt-1"
+        >
+          күн
+        </span>
+      </div>
+
+      <div class="flex flex-col items-center">
+        <span
+          id="cd-hours"
+          class="font-display text-4xl md:text-5xl"
+          style="color: var(--gold);"
+        >0</span>
+
+        <span
+          data-template-id="label-hours"
+          class="canva-text text-xs uppercase tracking-wider mt-1"
+        >
+          саат
+        </span>
+      </div>
+
+      <div class="flex flex-col items-center">
+        <span
+          id="cd-minutes"
+          class="font-display text-4xl md:text-5xl"
+          style="color: var(--gold);"
+        >0</span>
+
+        <span
+          data-template-id="label-minutes"
+          class="canva-text text-xs uppercase tracking-wider mt-1"
+        >
+          мүнөт
+        </span>
+      </div>
+
+      <div class="flex flex-col items-center">
+        <span
+          id="cd-seconds"
+          class="font-display text-4xl md:text-5xl"
+          style="color: var(--gold);"
+        >0</span>
+
+        <span
+          data-template-id="label-seconds"
+          class="canva-text text-xs uppercase tracking-wider mt-1"
+        >
+          секунд
+        </span>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="divider-ornament"></div>
+
+  <!-- Venue -->
+  <section
+    class="py-16 px-4 text-center fade-in max-w-lg mx-auto"
+  >
+    <h2
+      data-template-id="venue-title"
+      class="canva-text font-display text-2xl mb-6"
+    >
+      Хан Сарай 
+    </h2>
+    
+    <p
+      data-template-id="venue-time"
+      class="canva-text text-lg mb-2"
+    >
+      Башталуу убактысы 17:00
+    </p>
+
+    <p
+      data-template-id="venue-place"
+      class="canva-text text-lg font-semibold"
+    >
+     <h2
+      data-template-id="venue-title"
+      class="canva-text font-display text-2xl mb-6"
+    >
+      Салтанаттын дареги
+    </h2>
+      «Хан Сарай» рестораны, Ынтымак айылы, Асан уулу Паязбек көчөсү 7.
+    </p>
+  </section>
+
+  <div class="divider-ornament"></div>
+
+  <!-- Hosts -->
+  <section
+    class="py-16 px-4 text-center fade-in max-w-lg mx-auto"
+  >
+    <h2
+      data-template-id="hosts-title"
+      class="canva-text font-display text-2xl mb-6"
+    >
+      Урматтоо менен, той ээлери
+    </h2>
+
+    <p
+      data-template-id="hosts-names"
+      class="canva-text text-xl"
+    >
+      Муминжан жана Минажат
+    </p>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 text-center fade-in">
+    <p
+      data-template-id="footer-text"
+      class="canva-text text-sm opacity-60"
+    >
+      Сиздерди чыдамсыздык менен күтөбүз!
+    </p>
+  </footer>
+
+  <!-- Audio -->
+  <button
+    class="audio-btn"
+    id="audio-btn"
+    aria-label="Музыканы күйгүзүү"
+    aria-pressed="false"
+    type="button"
+  >
+    <i data-lucide="volume-2" style="width:22px;height:22px;"></i>
+  </button>
+
+  <script>
+    /* --------------------------------
+       Icons
+    -------------------------------- */
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+
+
+    /* --------------------------------
+       Floating particles
+    -------------------------------- */
+    (function createParticles() {
+      const container = document.getElementById("particles");
+
+      if (!container) return;
+
+      const fragment = document.createDocumentFragment();
+
+      for (let i = 0; i < 15; i++) {
+        const particle = document.createElement("div");
+
+        particle.className = "particle";
+        particle.style.left = Math.random() * 100 + "%";
+        particle.style.animationDelay = Math.random() * 8 + "s";
+        particle.style.animationDuration =
+          6 + Math.random() * 6 + "s";
+
+        fragment.appendChild(particle);
+      }
+
+      container.appendChild(fragment);
+    })();
+
+
+    /* --------------------------------
+       Calendar — September 2026
+    -------------------------------- */
+    (function createCalendar() {
+      const calendar = document.getElementById("calendar");
+
+      if (!calendar) return;
+
+      const weekdays = [
+        "Дш",
+        "Шш",
+        "Шр",
+        "Бш",
+        "Жм",
+        "Иш",
+        "Жк"
+      ];
+
+      weekdays.forEach((day) => {
+        const element = document.createElement("div");
+
+        element.textContent = day;
+        element.className =
+          "font-bold text-xs opacity-50 py-1";
+
+        calendar.appendChild(element);
+      });
+
+      // 1-сентябрь 2026 — шейшемби.
+      const firstDay = new Date(
+        2026,
+        8,
+        1
+      ).getDay();
+
+      // JS: Sunday = 0, Monday = 1.
+      // Биздин календарь Monday-based.
+      const mondayBasedOffset =
+        firstDay === 0 ? 6 : firstDay - 1;
+
+      for (let i = 0; i < mondayBasedOffset; i++) {
+        const empty = document.createElement("div");
+        calendar.appendChild(empty);
+      }
+
+      const daysInMonth = new Date(
+        2026,
+        9,
+        0
+      ).getDate();
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const element = document.createElement("div");
+
+        element.textContent = day;
+        element.className =
+          "calendar-day py-2 text-base";
+
+        if (day === 17) {
+          element.classList.add("calendar-highlight");
+          element.setAttribute(
+            "aria-label",
+            "17-сентябрь — той күнү"
+          );
+        }
+
+        calendar.appendChild(element);
+      }
+    })();
+
+
+    /* --------------------------------
+       Countdown
+       17 September 2026, 17:00 Bishkek
+       UTC+06:00
+    -------------------------------- */
+    const targetDate =
+      new Date("2026-09-17T17:00:00+06:00").getTime();
+
+    const countdownElements = {
+      days: document.getElementById("cd-days"),
+      hours: document.getElementById("cd-hours"),
+      minutes: document.getElementById("cd-minutes"),
+      seconds: document.getElementById("cd-seconds")
+    };
+
+    function updateCountdown() {
+      const now = Date.now();
+      const difference = targetDate - now;
+
+      if (difference <= 0) {
+        countdownElements.days.textContent = "0";
+        countdownElements.hours.textContent = "0";
+        countdownElements.minutes.textContent = "0";
+        countdownElements.seconds.textContent = "0";
+        return;
+      }
+
+      const totalSeconds =
+        Math.floor(difference / 1000);
+
+      const days =
+        Math.floor(totalSeconds / 86400);
+
+      const hours =
+        Math.floor(
+          (totalSeconds % 86400) / 3600
+        );
+
+      const minutes =
+        Math.floor(
+          (totalSeconds % 3600) / 60
+        );
+
+      const seconds =
+        totalSeconds % 60;
+
+      countdownElements.days.textContent = days;
+      countdownElements.hours.textContent = hours;
+      countdownElements.minutes.textContent = minutes;
+      countdownElements.seconds.textContent = seconds;
+    }
+
+    updateCountdown();
+
+    const countdownTimer =
+      setInterval(updateCountdown, 1000);
+
+
+    /* --------------------------------
+       Scroll animations
+    -------------------------------- */
+    const animatedElements =
+      document.querySelectorAll(".fade-in");
+
+    if ("IntersectionObserver" in window) {
+      const observer =
+        new IntersectionObserver(
+          (entries, observerInstance) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("visible");
+                observerInstance.unobserve(entry.target);
+              }
+            });
+          },
+          {
+            threshold: 0.15
+          }
+        );
+
+      animatedElements.forEach((element) => {
+        observer.observe(element);
+      });
+    } else {
+      animatedElements.forEach((element) => {
+        element.classList.add("visible");
+      });
+    }
+
+
+    /* --------------------------------
+       Audio
+    -------------------------------- */
+    let audioContext = null;
+    let oscillator = null;
+    let gainNode = null;
+    let lfo = null;
+    let lfoGain = null;
+    let isPlaying = false;
+
+    const audioButton =
+      document.getElementById("audio-btn");
+
+    function renderAudioIcon() {
+      if (!window.lucide) return;
+
+      audioButton.innerHTML = isPlaying
+        ? '<i data-lucide="volume-x" style="width:22px;height:22px;"></i>'
+        : '<i data-lucide="volume-2" style="width:22px;height:22px;"></i>';
+
+      lucide.createIcons();
+
+      audioButton.setAttribute(
+        "aria-pressed",
+        String(isPlaying)
+      );
+
+      audioButton.setAttribute(
+        "aria-label",
+        isPlaying
+          ? "Музыканы өчүрүү"
+          : "Музыканы күйгүзүү"
+      );
+    }
+
+    function stopAudio() {
+      if (!audioContext) return;
+
+      try {
+        if (oscillator) {
+          oscillator.stop();
+          oscillator.disconnect();
+        }
+      } catch (error) {
+        // Oscillator буга чейин токтогон болсо,
+        // бул жерде ката чыгаруунун кереги жок.
+      }
+
+      try {
+        if (lfo) {
+          lfo.stop();
+          lfo.disconnect();
+        }
+      } catch (error) {
+        // LFO мурунтан токтогон болушу мүмкүн.
+      }
+
+      if (gainNode) {
+        gainNode.disconnect();
+      }
+
+      if (lfoGain) {
+        lfoGain.disconnect();
+      }
+
+      oscillator = null;
+      lfo = null;
+      gainNode = null;
+      lfoGain = null;
+      isPlaying = false;
+
+      renderAudioIcon();
+    }
+
+    function startAudio() {
+      if (!audioContext) {
+        const AudioContext =
+          window.AudioContext ||
+          window.webkitAudioContext;
+
+        if (!AudioContext) {
+          console.warn(
+            "Бул браузер Web Audio API колдобойт."
+          );
+          return;
+        }
+
+        audioContext = new AudioContext();
+      }
+
+      if (audioContext.state === "suspended") {
+        audioContext.resume();
+      }
+
+      gainNode =
+        audioContext.createGain();
+
+      gainNode.gain.value = 0.03;
+
+      gainNode.connect(
+        audioContext.destination
+      );
+
+      oscillator =
+        audioContext.createOscillator();
+
+      oscillator.type = "sine";
+      oscillator.frequency.value = 440;
+
+      lfo =
+        audioContext.createOscillator();
+
+      lfo.frequency.value = 0.5;
+
+      lfoGain =
+        audioContext.createGain();
+
+      lfoGain.gain.value = 25;
+
+      lfo.connect(lfoGain);
+      lfoGain.connect(
+        oscillator.frequency
+      );
+
+      oscillator.connect(gainNode);
+
+      lfo.start();
+      oscillator.start();
+
+      isPlaying = true;
+
+      renderAudioIcon();
+    }
+
+    audioButton.addEventListener(
+      "click",
+      () => {
+        if (isPlaying) {
+          stopAudio();
+        } else {
+          startAudio();
+        }
+      }
+    );
+
+
+    /* --------------------------------
+       Cleanup
+    -------------------------------- */
+    window.addEventListener(
+      "beforeunload",
+      () => {
+        clearInterval(countdownTimer);
+        stopAudio();
+      }
+    );
+  </script>
+</body>
+</html>
